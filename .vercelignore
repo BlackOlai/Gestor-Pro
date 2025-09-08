@@ -7,3 +7,4 @@ api/server.ts
 server/
 *.md
 README-SETUP.md
+tsconfig.json
