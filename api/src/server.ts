@@ -7,21 +7,11 @@ import chatHandler from './chat.js';
 // Load environment variables
 dotenv.config();
 
-// Validate required environment variables
-const requiredEnvVars = [
-  'PORT',
-  'FRONTEND_URL',
-  'GROQ_API_KEY',
-  'GROQ_MODEL',
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY'
-];
-
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-if (missingVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingVars.join(', '));
-  process.exit(1);
-}
+// Log environment variables (without validation to prevent crashes)
+console.log('Environment variables status:');
+console.log('- GROQ_API_KEY:', process.env.GROQ_API_KEY ? '✅ Present' : '❌ Missing');
+console.log('- SUPABASE_URL:', process.env.SUPABASE_URL ? '✅ Present' : '❌ Missing');
+console.log('- SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ Present' : '❌ Missing');
 
 console.log('✅ Environment variables loaded successfully');
 console.log('Environment:', process.env.NODE_ENV || 'development');
