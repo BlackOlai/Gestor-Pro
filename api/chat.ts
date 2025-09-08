@@ -104,7 +104,8 @@ export default async function chatHandler(req: Request, res: Response) {
     const timeout = setTimeout(() => controller.abort(), 30000);
 
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const groqApiUrl = process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions';
+      const response = await fetch(groqApiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -30,9 +30,27 @@ console.log('Frontend URL:', process.env.FRONTEND_URL);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// Configuração de origens permitidas
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://gestor-pro-rovians-projects.vercel.app',
+  'https://gestor-pro-seven.vercel.app'
+];
+
+// Middleware CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Permite requisições sem origem (como aplicativos móveis, curl, etc)
+    if (!origin) return callback(null, true);
+    
+    // Verifica se a origem está na lista de permitidas
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Se não estiver na lista, rejeita a requisição
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());

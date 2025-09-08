@@ -7,11 +7,12 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc && cp -r src/types dist/ || echo 'Types copy failed'",
     "clean": "rimraf dist",
     "lint": "eslint . --ext .ts",
     "prestart": "npm run build",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "vercel-build": "npm install && tsc && cp -r src/types dist/ || echo 'Types copy failed'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.2",

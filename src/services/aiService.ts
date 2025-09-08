@@ -19,7 +19,8 @@ export const getAIService = () => {
             throw new Error('AI service not initialized');
           }
           
-          const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          const groqApiUrl = import.meta.env.VITE_GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions';
+          const response = await fetch(groqApiUrl, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${apiKey}`,

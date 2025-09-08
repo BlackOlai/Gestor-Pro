@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 
-// Novo serviço para comunicação com backend seguro
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'https://gestor-elv06ryq4-rovians-projects.vercel.app/api';
+// Configuração da URL base da API
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+  console.error('VITE_API_URL não está definido nas variáveis de ambiente');
+}
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -29,26 +32,38 @@ export class APIService {
   private static async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
+    console.log(`[API] Fazendo requisição para: ${url}`);
+    
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        credentials: 'include', // Importante para CORS com credenciais
+        ...options,
+      });
+      
+      console.log(`[API] Resposta recebida de ${url}:`, response.status, response.statusText);
 
-    if (!response.ok) {
+      if (!response.ok) {
+      console.error(`[API] Erro na requisição para ${url}:`, response.status, response.statusText);
+      
       // Tenta obter JSON, se falhar usa texto simples
       let errorData: any = {};
       try {
-        errorData = await response.json();
-      } catch (_) {
-        try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          errorData = await response.json();
+          console.error('[API] Detalhes do erro (JSON):', errorData);
+        } else {
           const text = await response.text();
+          console.error('[API] Detalhes do erro (texto):', text);
           errorData = { error: text };
-        } catch (_) {
-          errorData = {};
         }
+      } catch (error) {
+        console.error('[API] Erro ao processar resposta de erro:', error);
+        errorData = { error: 'Erro ao processar resposta do servidor' };
       }
 
       // Constrói mensagem detalhada sem expor segredos
@@ -63,10 +78,15 @@ export class APIService {
       }
       if (parts.length === 0) parts.push(`HTTP ${response.status}: ${response.statusText}`);
 
-      throw new Error(parts.join(' | '));
-    }
+        throw new Error(parts.join(' | '));
+      }
 
-    return response.json();
+      return response.json();
+    } catch (error: unknown) {
+      console.error(`[API] Erro na requisição para ${url}:`, error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      throw new Error(`Falha na comunicação com o servidor: ${errorMessage}`);
+    }
   }
 
   static async sendChatMessage(

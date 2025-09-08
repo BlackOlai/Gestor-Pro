@@ -1,5 +1,5 @@
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
-import { getSupabase } from './_supabase.js';
+import { getSupabase } from './_supabase';
 import { Database } from './types/database.types';
 
 type Tables = Database['public']['Tables'];
