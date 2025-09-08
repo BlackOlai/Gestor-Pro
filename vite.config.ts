@@ -12,10 +12,8 @@ export default defineConfig(({ mode }) => {
       exclude: ['lucide-react'],
     },
     define: {
-      'process.env': {
-        VITE_API_URL: JSON.stringify(env.VITE_API_URL),
-        VITE_GROQ_API_URL: JSON.stringify(env.VITE_GROQ_API_URL)
-      }
+      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api'),
+      'import.meta.env.VITE_GROQ_API_URL': JSON.stringify(env.VITE_GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions')
     },
     server: {
       port: 5173,
