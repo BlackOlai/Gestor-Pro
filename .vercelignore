@@ -1,6 +1,5 @@
 server/
 api/src/
-api/dist/
 api/chat.ts
 api/health.ts
 api/status.ts
