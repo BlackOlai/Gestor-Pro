@@ -3,7 +3,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/**/*.ts": {
+    "api/chat.ts": {
+      "runtime": "@vercel/node@5.3.21"
+    },
+    "api/health.ts": {
+      "runtime": "@vercel/node@5.3.21"
+    },
+    "api/status.ts": {
       "runtime": "@vercel/node@5.3.21"
     }
   },
