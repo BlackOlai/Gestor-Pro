@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 
-// Configuração da URL base da API
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// Configuração da URL base da API - FORÇAR /api para produção
+const API_BASE_URL = '/api';
 
-if (!import.meta.env.VITE_API_URL) {
-  console.warn('VITE_API_URL não definido, usando "/api" como padrão');
-}
+console.log('API_BASE_URL definido como:', API_BASE_URL);
+console.log('import.meta.env.VITE_API_URL:', import.meta.env.VITE_API_URL);
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';

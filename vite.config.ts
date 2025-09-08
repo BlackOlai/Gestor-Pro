@@ -6,15 +6,18 @@ export default defineConfig(({ mode }) => {
   // Carrega as variáveis de ambiente
   const env = loadEnv(mode, process.cwd(), '');
   
+  console.log('Vite Build Mode:', mode);
+  console.log('Environment Variables:', {
+    VITE_API_URL: env.VITE_API_URL,
+    VITE_GROQ_API_URL: env.VITE_GROQ_API_URL
+  });
+  
   return {
     plugins: [react()],
     optimizeDeps: {
       exclude: ['lucide-react'],
     },
-    define: {
-      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api'),
-      'import.meta.env.VITE_GROQ_API_URL': JSON.stringify(env.VITE_GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions')
-    },
+    envPrefix: 'VITE_',
     server: {
       port: 5173,
       strictPort: true
