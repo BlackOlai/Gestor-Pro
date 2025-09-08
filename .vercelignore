@@ -5,7 +5,7 @@ api/health.ts
 api/status.ts
 api/_supabase.ts
 api/server.ts
-api/tsconfig*.json
+api/tsconfig.build.json
 api/package*.json
 api/start.*
 api/now.json
