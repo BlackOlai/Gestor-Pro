@@ -51,6 +51,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Sincroniza estado com Firebase Auth
   useEffect(() => {
+    // Only set up auth listener if Firebase is initialized
+    if (!auth) {
+      console.log('Firebase auth not initialized - skipping auth state listener');
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (fbUser: FirebaseUser | null) => {
       if (fbUser) {
         const mapped: User = mapFirebaseUser(fbUser);
@@ -70,6 +76,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    if (!auth) {
+      console.warn('Firebase not initialized - login unavailable');
+      return false;
+    }
     setIsLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -85,6 +95,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const register = async (email: string, password: string, name: string): Promise<boolean> => {
+    if (!auth) {
+      console.warn('Firebase not initialized - register unavailable');
+      return false;
+    }
     setIsLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -103,7 +117,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    if (auth) {
+      await signOut(auth);
+    }
     setAuthState({ user: null, isAuthenticated: false });
     localStorage.removeItem('company-profile');
     localStorage.removeItem('chat-sessions');
@@ -111,6 +127,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const googleLogin = async (): Promise<boolean> => {
+    if (!auth || !googleProvider) {
+      console.warn('Firebase not initialized - Google login unavailable');
+      return false;
+    }
     setIsLoading(true);
     try {
       const cred = await signInWithPopup(auth, googleProvider);
