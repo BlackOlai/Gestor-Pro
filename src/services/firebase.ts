@@ -26,23 +26,28 @@ if (!firebaseConfig.authDomain) missing.push('VITE_FIREBASE_AUTH_DOMAIN');
 if (!firebaseConfig.projectId) missing.push('VITE_FIREBASE_PROJECT_ID');
 if (!firebaseConfig.appId) missing.push('VITE_FIREBASE_APP_ID');
 if (missing.length) {
-  const errorMsg = `Firebase config ausente: ${missing.join(', ')}. Verifique as variáveis de ambiente na Vercel.`;
-  console.error(errorMsg);
-  throw new Error(errorMsg);
+  const errorMsg = `Firebase config ausente: ${missing.join(', ')}. Aplicação funcionará sem autenticação.`;
+  console.warn(errorMsg);
+  // Don't throw error - allow app to continue without Firebase
 }
 
 // Initialize app only once
 let auth;
 let googleProvider;
 
-try {
-  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  console.log('Firebase inicializado com sucesso!');
-  auth = getAuth(app);
-  googleProvider = new GoogleAuthProvider();
-} catch (error) {
-  console.error('Erro ao inicializar o Firebase:', error);
-  throw error;
+// Only initialize Firebase if all config is available
+if (missing.length === 0) {
+  try {
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    console.log('Firebase inicializado com sucesso!');
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+  } catch (error) {
+    console.error('Erro ao inicializar o Firebase:', error);
+    // Don't throw - allow app to continue
+  }
+} else {
+  console.log('Firebase não inicializado - variáveis de ambiente ausentes');
 }
 
 export { auth, googleProvider };
